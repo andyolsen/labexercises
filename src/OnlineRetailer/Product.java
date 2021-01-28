@@ -2,31 +2,43 @@ package OnlineRetailer;
 
 public class Product {
 
-    String name;
-    String category;
-    double netPrice;
-    int unitsInStock;
-    int stockReorderThreshold;
+    private String name;
+    private String category;
+    private double netPrice;
+    private int unitsInStock;
 
-    public Product(String n, String cat, Double np, int u, int r){
-        System.out.println("I have made an object!");
-        name = n;
-        category = cat;
-        netPrice = np;
-        unitsInStock = u;
-        stockReorderThreshold = r;
+    private final int productId;
+    private final int reorderThreshold;
+    private final int reorderAmount;
+
+    private static int nextId = 11;
+    private final static int REORDER_PERCENTAGE = 50/100;
+    private final static double SALES_TAX_PERCENTAGE = 25/100;
+
+
+    public Product(String name, String category, Double netPrice, int unitsInStock, int reorderThreshold){
+        this.productId = nextId++;
+        this.name = name;
+        this.category = category;
+        this.netPrice = netPrice;
+        this.unitsInStock = unitsInStock;
+        this.reorderThreshold = reorderThreshold;
+        this.reorderAmount = reorderThreshold * REORDER_PERCENTAGE;
+        System.out.println(unitsInStock);
+        System.out.println(REORDER_PERCENTAGE); //Why = 0?
     }
 
     public String toString() {
-        return String.format("%s in category %s costs NOK %.2f. We have %d in stock and will reorder more when we have %d left", name, category, netPrice, unitsInStock, stockReorderThreshold);
+        return String.format("%s in category %s costs NOK %.2f. We have %d in stock and will reorder more when we have %d left", name, category, netPrice, unitsInStock, reorderThreshold);
     }
 
     public boolean isAvailable(){
-        return (unitsInStock >= 1);
+        return unitsInStock >= 1;
     }
 
+
     public double getSalesTax() {
-        return netPrice*0.25;
+        return netPrice * SALES_TAX_PERCENTAGE;
     }
 
     public double getGrossPrice() {
@@ -37,7 +49,7 @@ public class Product {
         if (isAvailable()) {
             unitsInStock--;
             if (reorderProduct()) {
-                System.out.printf("We just ordered 20 new %s\n", name);
+                System.out.printf("We just ordered %d new %s\n", reorderAmount, name);
             }
         }
     }
@@ -47,8 +59,8 @@ public class Product {
     }
 
     public boolean reorderProduct() {
-        if (unitsInStock <= stockReorderThreshold) {
-            unitsInStock += 20; //always reorder 20
+        if (unitsInStock <= reorderThreshold) {
+            unitsInStock += reorderAmount;
         return true;
         }
         return false;
