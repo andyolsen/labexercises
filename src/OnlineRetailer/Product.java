@@ -12,6 +12,8 @@ public class Product {
     private final int reorderAmount;
 
     private static int nextId = 11;
+    
+    // ANDY - use doubles and 50.0/100.0 and this will work :D
     private final static int REORDER_PERCENTAGE = 50/100;
     private final static double SALES_TAX_PERCENTAGE = 25/100;
 
